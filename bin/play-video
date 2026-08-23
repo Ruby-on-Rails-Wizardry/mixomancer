@@ -1,0 +1,40 @@
+#!/bin/bash
+# Play a library video on HDMI + analog jack. Path comes from video-current.
+set -euo pipefail
+
+PATH_FILE="${VIDEO_PATH_FILE:-/home/rob/audio-cds-queue/video-current}"
+RUNTIME="${XDG_RUNTIME_DIR:-/run/user/1000}"
+export XDG_RUNTIME_DIR="$RUNTIME"
+export PULSE_SERVER="unix:${RUNTIME}/pulse/native"
+
+[[ -f $PATH_FILE ]] || { echo "no video-current path file" >&2; exit 1; }
+FILE="$(tr -d '\n' < "$PATH_FILE")"
+[[ -n $FILE && -f $FILE ]] || { echo "video file missing: ${FILE:-empty}" >&2; exit 1; }
+
+case "$FILE" in
+  /mnt/movies/*|/mnt/shows/*) ;;
+  *) echo "refusing path outside video library: $FILE" >&2; exit 1 ;;
+esac
+
+amixer -c 0 sset Master unmute 80% >/dev/null || true
+
+sink=""
+for _ in $(seq 1 20); do
+  sink="$(pactl list short sinks 2>/dev/null | awk '/alsa_output.*analog/ {print $2; exit}')"
+  [[ -n $sink ]] && break
+  sleep 1
+done
+[[ -n $sink ]] || { echo "no analog ALSA sink" >&2; exit 1; }
+
+pactl set-default-sink "$sink"
+pactl set-sink-volume "$sink" 80%
+pactl set-sink-mute "$sink" 0
+
+SOCKET="${RUNTIME}/mpv-video.sock"
+rm -f "$SOCKET"
+
+exec mpv --ao=pulse --audio-device="pulse/${sink}" \
+  --vo=gpu --gpu-context=drm --drm-connector=HDMI-A-2 --drm-mode=1920x1080 \
+  --fs --osd-level=1 --no-input-terminal --loop-file=no \
+  --input-ipc-server="$SOCKET" \
+  "$FILE"

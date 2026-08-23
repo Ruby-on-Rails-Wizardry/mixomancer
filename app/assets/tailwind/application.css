@@ -1,1 +1,119 @@
 @import "tailwindcss";
+
+html:has(.display-shell),
+body:has(.display-shell) {
+  height: 100%;
+  overflow: hidden;
+}
+
+.display-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-color: #09090b;
+  background-position: center;
+  background-size: cover;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  pointer-events: none;
+}
+
+.display-backdrop.is-on {
+  opacity: 1;
+}
+
+.display-backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, rgba(9, 9, 11, 0.55) 0%, rgba(9, 9, 11, 0.42) 40%, rgba(9, 9, 11, 0.78) 100%);
+}
+
+.display-shell {
+  position: relative;
+  isolation: isolate;
+  box-sizing: border-box;
+  height: 100svh;
+  max-height: 100dvh;
+  overflow: hidden;
+  padding-top: max(clamp(0.45rem, 2.4vmin, 2rem), env(safe-area-inset-top, 0px));
+  padding-right: max(clamp(0.65rem, 3vmin, 3rem), env(safe-area-inset-right, 0px));
+  padding-bottom: max(clamp(0.45rem, 2.4vmin, 2rem), env(safe-area-inset-bottom, 0px));
+  padding-left: max(clamp(0.65rem, 3vmin, 3rem), env(safe-area-inset-left, 0px));
+}
+
+.display-shell > :not(.display-backdrop) {
+  position: relative;
+  z-index: 1;
+}
+
+.display-brand {
+  font-size: clamp(1.05rem, 3.6vmin, 1.875rem);
+}
+
+.display-kicker {
+  font-size: clamp(0.55rem, 1.7vmin, 0.875rem);
+  letter-spacing: 0.22em;
+}
+
+.display-title {
+  font-size: clamp(1.2rem, 6.4vmin, 4.5rem);
+  text-wrap: balance;
+}
+
+.display-album {
+  font-size: clamp(0.8rem, 2.6vmin, 1.875rem);
+}
+
+.display-time {
+  font-size: clamp(0.75rem, 2.2vmin, 1.25rem);
+}
+
+.display-qr {
+  width: clamp(4.25rem, 15vmin, 10rem);
+  height: clamp(4.25rem, 15vmin, 10rem);
+}
+
+.display-qr svg {
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 640px) {
+  .display-kicker {
+    max-width: 46%;
+    text-align: right;
+    letter-spacing: 0.12em;
+  }
+
+  .display-scan-url {
+    display: none;
+  }
+
+  .display-qr {
+    width: clamp(3.75rem, 22vw, 6rem);
+    height: clamp(3.75rem, 22vw, 6rem);
+  }
+}
+
+@media (max-height: 420px) {
+  .display-replay {
+    display: none;
+  }
+
+  .display-scan-copy {
+    display: none;
+  }
+
+  .display-qr {
+    width: clamp(3.25rem, 14vmin, 5.5rem);
+    height: clamp(3.25rem, 14vmin, 5.5rem);
+  }
+}
+
+@media (max-height: 280px), (max-width: 360px) and (max-height: 500px) {
+  .display-kicker {
+    display: none;
+  }
+}

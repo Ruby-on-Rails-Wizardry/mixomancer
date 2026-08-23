@@ -1,0 +1,22 @@
+[Unit]
+Description=Mixomancer HDMI video
+After=systemd-udev-settle.service
+Conflicts=mixomancer-kiosk.service mixomancer-display.service
+OnSuccess=mixomancer-kiosk.service
+
+[Service]
+Type=simple
+User=rob
+Group=rob
+SupplementaryGroups=video audio
+Environment=XDG_RUNTIME_DIR=/run/user/1000
+Environment=PULSE_SERVER=unix:/run/user/1000/pulse/native
+StandardInput=tty
+StandardOutput=journal
+StandardError=journal
+TTYPath=/dev/tty7
+TTYReset=yes
+TTYVHangup=yes
+ExecStartPre=+/usr/bin/chvt 7
+ExecStart=/home/rob/Ruby-on-Rails-Wizardry/mixomancer/bin/play-video
+Restart=no

@@ -1,0 +1,66 @@
+<% content_for :title, "Now playing · Mixomancer" %>
+<% artwork = Artwork.url_for(title: @now_playing[:title], album: @now_playing[:album]) %>
+
+<div class="display-shell flex flex-col"
+     data-controller="player"
+     data-player-url-value="<%= now_playing_path %>"
+     data-player-seek-url-value="<%= seek_path %>"
+     data-player-replay-url-value="<%= replay_path %>">
+  <div data-player-target="backdrop"
+       class="display-backdrop<%= " is-on" if artwork %>"
+       <% if artwork %>style="background-image: url('<%= artwork %>')"<% end %>></div>
+  <header class="flex w-full shrink-0 items-start justify-between gap-3">
+    <p class="display-brand font-bold tracking-tight text-zinc-50">Mixomancer</p>
+    <p class="display-kicker font-medium uppercase text-violet-400">Ruby on Rails Wizardry</p>
+  </header>
+
+  <div class="flex min-h-0 flex-1 flex-col items-center justify-center overflow-hidden px-2 text-center">
+    <p class="<%= "hidden" if @now_playing[:state] == "playing" %>">
+      <span data-player-target="badge" class="<%= player_state_badge_class(@now_playing[:state]) %>"><%= @now_playing[:state] %></span>
+    </p>
+
+    <p data-player-target="title" class="display-title max-w-5xl font-bold leading-tight tracking-tight text-zinc-50">
+      <%= player_title(@now_playing) %>
+    </p>
+    <p data-player-target="album" class="display-album mt-[0.4em] text-zinc-400"><%= @now_playing[:album] %></p>
+  </div>
+
+  <div class="mt-[clamp(0.5rem,2vmin,2.5rem)] shrink-0">
+    <div class="mb-[clamp(0.35rem,1.4vmin,0.75rem)] flex items-end justify-between gap-3">
+      <div data-player-target="meta" class="min-w-0 <%= "hidden" if @now_playing[:state] == "stopped" %>">
+        <button type="button" data-action="player#replay"
+                class="display-replay mb-1 rounded-md border border-zinc-600 bg-zinc-800 px-3 py-1 text-xs font-semibold text-zinc-100 hover:bg-zinc-700 sm:text-sm">
+          Replay 30s
+        </button>
+        <p class="display-time whitespace-nowrap font-mono text-zinc-400">
+          <span data-player-target="position"><%= @now_playing[:position_label] %></span>
+          /
+          <span data-player-target="duration"><%= @now_playing[:duration_label] %></span>
+          <span data-player-target="index" class="ml-3 sm:ml-6">
+            <% if @now_playing[:playlist_pos] && @now_playing[:playlist_count] %>
+              <%= @now_playing[:playlist_pos] %> of <%= @now_playing[:playlist_count] %>
+            <% end %>
+          </span>
+        </p>
+      </div>
+      <aside class="flex flex-none items-end gap-3">
+        <div class="display-scan-copy mb-1 text-right">
+          <p class="text-xs text-zinc-500 sm:text-sm">Scan to control</p>
+          <p class="display-scan-url mt-1 font-mono text-[0.65rem] text-zinc-600 sm:text-xs"><%= @control_url %></p>
+        </div>
+        <div class="display-qr">
+          <%= control_qr_svg(@control_url) %>
+        </div>
+      </aside>
+    </div>
+    <div data-player-target="meta" class="<%= "hidden" if @now_playing[:state] == "stopped" %>">
+      <div data-player-target="bar"
+           data-action="pointerdown->player#startSeek pointermove->player#moveSeek pointerup->player#endSeek pointercancel->player#endSeek"
+           class="relative h-8 w-full cursor-pointer touch-none sm:h-10">
+        <div class="absolute inset-x-0 top-1/2 h-2 -translate-y-1/2 overflow-hidden rounded-full bg-zinc-800 sm:h-3">
+          <div data-player-target="progress" class="h-full rounded-full bg-violet-500" style="width: <%= @now_playing[:percent] %>%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

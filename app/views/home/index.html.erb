@@ -1,55 +1,59 @@
 <% content_for :title, "Mixomancer" %>
 
-<div class="w-full max-w-3xl space-y-8">
-  <header>
-    <p class="text-sm font-medium uppercase tracking-wide text-violet-400">Ruby on Rails Wizardry</p>
-    <h1 class="mt-1 text-4xl font-bold tracking-tight text-zinc-50">Mixomancer</h1>
-    <p class="mt-3 text-lg text-zinc-300">
-      Household DJ for Meadow Circle. This Rails server will run the shop music queue.
-      Groundwork already on haruna: NFS library from gluttony, mpv playlist, analog jack.
-    </p>
-    <p class="mt-2 text-sm text-zinc-500">
-      Ruby <%= RUBY_VERSION %> · Rails <%= Rails.version %> · host <%= Socket.gethostname %>
-    </p>
-  </header>
-
+<div class="w-full space-y-8"
+     data-controller="player"
+     data-player-url-value="<%= now_playing_path %>"
+     data-player-seek-url-value="<%= seek_path %>"
+     data-player-replay-url-value="<%= replay_path %>">
   <section class="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
-    <h2 class="text-sm font-semibold uppercase tracking-wide text-zinc-400">Library</h2>
-    <% if @library_mounted %>
-      <p class="mt-1 font-mono text-sm text-emerald-400"><%= @library_root %></p>
-      <ul class="mt-4 space-y-3">
-        <% @albums.each do |album| %>
-          <li>
-            <p class="font-medium text-zinc-100"><%= album[:name] %></p>
-            <p class="text-sm text-zinc-500"><%= album[:tracks].size %> tracks</p>
-            <ul class="mt-1 list-disc pl-5 text-sm text-zinc-400">
-              <% album[:tracks].each do |track| %>
-                <li><%= track %></li>
-              <% end %>
-            </ul>
-          </li>
-        <% end %>
-      </ul>
-    <% else %>
-      <p class="mt-2 text-amber-400">NFS library is not mounted at <span class="font-mono"><%= @library_root %></span>.</p>
-    <% end %>
-  </section>
+    <div class="flex flex-wrap items-start justify-between gap-4">
+      <div>
+        <h1 class="text-sm font-semibold uppercase tracking-wide text-zinc-400">Now playing</h1>
+        <p class="mt-2 <%= "hidden" if @now_playing[:state] == "playing" %>">
+          <span data-player-target="badge" class="<%= player_state_badge_class(@now_playing[:state]) %>"><%= @now_playing[:state] %></span>
+        </p>
+      </div>
+      <div class="flex gap-3">
+        <%= button_to "Play", play_path, method: :post,
+              form_class: "inline",
+              class: transport_play_class,
+              disabled: @now_playing[:state] == "playing",
+              data: { player_target: "play" } %>
+        <%= button_to "Stop", stop_path, method: :post,
+              form_class: "inline",
+              class: transport_stop_class,
+              disabled: @now_playing[:state] != "playing",
+              data: { player_target: "stop" } %>
+      </div>
+    </div>
 
-  <section class="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
-    <h2 class="text-sm font-semibold uppercase tracking-wide text-zinc-400">mpv queue (<%= HomeController::QUEUE_UNIT %>)</h2>
-    <p class="mt-2">
-      <% if @queue_active %>
-        <span class="rounded-full bg-emerald-900/80 px-3 py-1 text-sm text-emerald-300">active</span>
-      <% else %>
-        <span class="rounded-full bg-zinc-800 px-3 py-1 text-sm text-zinc-400">inactive</span>
-      <% end %>
-    </p>
-    <% if @playlist_tracks.any? %>
-      <ol class="mt-4 list-decimal space-y-1 pl-5 text-sm text-zinc-300">
-        <% @playlist_tracks.each do |track| %>
-          <li class="font-mono"><%= track.sub(%r{\A/mnt/audio_cds/}, "") %></li>
-        <% end %>
-      </ol>
-    <% end %>
+    <p data-player-target="title" class="mt-4 text-2xl font-semibold text-zinc-50"><%= player_title(@now_playing) %></p>
+    <p data-player-target="album" class="mt-1 text-sm text-zinc-400"><%= @now_playing[:album] %></p>
+
+    <div data-player-target="meta" class="mt-4 <%= "hidden" if @now_playing[:state] == "stopped" %>">
+      <div class="mb-2 flex items-center gap-3">
+        <button type="button" data-action="player#replay"
+                class="rounded-md border border-zinc-600 bg-zinc-800 px-3 py-1 text-xs font-semibold text-zinc-100 hover:bg-zinc-700">
+          Replay 30s
+        </button>
+      </div>
+      <p class="mb-2 font-mono text-sm text-zinc-400">
+        <span data-player-target="position"><%= @now_playing[:position_label] %></span>
+        /
+        <span data-player-target="duration"><%= @now_playing[:duration_label] %></span>
+        <span data-player-target="index" class="ml-3">
+          <% if @now_playing[:playlist_pos] && @now_playing[:playlist_count] %>
+            <%= @now_playing[:playlist_pos] %> of <%= @now_playing[:playlist_count] %>
+          <% end %>
+        </span>
+      </p>
+      <div data-player-target="bar"
+           data-action="pointerdown->player#startSeek pointermove->player#moveSeek pointerup->player#endSeek pointercancel->player#endSeek"
+           class="relative h-8 w-full cursor-pointer touch-none">
+        <div class="absolute inset-x-0 top-1/2 h-2 -translate-y-1/2 overflow-hidden rounded-full bg-zinc-800">
+          <div data-player-target="progress" class="h-2 rounded-full bg-violet-500" style="width: <%= @now_playing[:percent] %>%"></div>
+        </div>
+      </div>
+    </div>
   </section>
 </div>

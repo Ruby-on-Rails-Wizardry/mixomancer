@@ -1,0 +1,35 @@
+#!/bin/bash
+# Full-screen Mixomancer on the HDMI output. No login session required.
+set -euo pipefail
+
+URL="${MIXOMANCER_KIOSK_URL:-http://127.0.0.1:3000/display}"
+# Bust Chromium's disk cache so CSS/artwork updates show on HDMI.
+URL="${URL%%\?*}?v=$(date +%s)"
+PROFILE="${MIXOMANCER_KIOSK_PROFILE:-/home/rob/.config/mixomancer-kiosk}"
+mkdir -p "$PROFILE"
+
+for _ in $(seq 1 60); do
+  if curl -sf -o /dev/null --max-time 1 http://127.0.0.1:3000/up; then
+    break
+  fi
+  sleep 1
+done
+
+exec /usr/bin/cage -s -- /usr/bin/chromium \
+  --ozone-platform=wayland \
+  --enable-features=UseOzonePlatform \
+  --user-data-dir="$PROFILE" \
+  --kiosk \
+  --no-first-run \
+  --noerrdialogs \
+  --disable-infobars \
+  --disable-session-crashed-bubble \
+  --disable-translate \
+  --disable-features=TranslateUI \
+  --disable-http-cache \
+  --disk-cache-size=1 \
+  --check-for-update-interval=31536000 \
+  --autoplay-policy=no-user-gesture-required \
+  --start-fullscreen \
+  --window-size=1920,1080 \
+  "$URL"

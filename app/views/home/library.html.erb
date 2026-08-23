@@ -1,0 +1,90 @@
+<% content_for :title, "Library · Mixomancer" %>
+
+<div class="w-full max-w-3xl space-y-8"
+     data-controller="player"
+     data-player-url-value="<%= now_playing_path %>">
+  <section class="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
+    <div class="flex flex-wrap items-end justify-between gap-3">
+      <h1 class="text-sm font-semibold uppercase tracking-wide text-zinc-400">Library</h1>
+      <div class="flex gap-2">
+        <%= link_to "Audio", library_path(media: "audio"), class: library_section_class(@media == "audio") %>
+        <%= link_to "Video", library_path(media: "video"), class: library_section_class(@media == "video") %>
+      </div>
+    </div>
+
+    <% if @media == "audio" %>
+      <% if @library_mounted && @albums.any? %>
+        <div class="mt-4 flex flex-wrap gap-1 border-b border-zinc-800" role="tablist">
+          <% @albums.each do |album| %>
+            <% active = album == @selected_album %>
+            <%= link_to album[:label], library_path(media: "audio", album: album[:name]),
+                  class: library_tab_class(active),
+                  role: "tab",
+                  "aria-selected": active %>
+          <% end %>
+        </div>
+
+        <% if @selected_album %>
+          <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+            <p class="font-medium text-zinc-100"><%= @selected_album[:label] %>
+              <span class="text-sm font-normal text-zinc-500"><%= pluralize(@selected_album[:tracks].size, "track") %></span>
+            </p>
+            <%= button_to "Play", play_item_path, method: :post,
+                  params: { album: @selected_album[:name] },
+                  form_class: "inline",
+                  class: library_play_class %>
+          </div>
+
+          <ul class="mt-3 divide-y divide-zinc-800">
+            <% @selected_album[:tracks].each do |track| %>
+              <li data-player-target="track" data-path="<%= track[:path] %>"
+                  class="flex items-center justify-between gap-3 py-2 <%= track[:path] == @now_playing[:path] ? "text-emerald-300" : "text-zinc-300" %>">
+                <span><%= track[:title] %></span>
+                <%= button_to "Play", play_item_path, method: :post,
+                      params: { album: @selected_album[:name], track: track[:path] },
+                      form_class: "inline",
+                      class: library_play_class %>
+              </li>
+            <% end %>
+          </ul>
+        <% end %>
+      <% elsif @library_mounted %>
+        <p class="mt-4 text-zinc-400">No albums found at <span class="font-mono text-sm"><%= @library_root %></span>.</p>
+      <% else %>
+        <p class="mt-4 text-amber-400">NFS library is not mounted at <span class="font-mono"><%= @library_root %></span>.</p>
+      <% end %>
+    <% else %>
+      <% if @video_collections.any? %>
+        <div class="mt-4 flex flex-wrap gap-1 border-b border-zinc-800" role="tablist">
+          <% @video_collections.each do |collection| %>
+            <% active = collection == @selected_collection %>
+            <%= link_to collection[:label], library_path(media: "video", collection: collection[:name]),
+                  class: library_tab_class(active),
+                  role: "tab",
+                  "aria-selected": active %>
+          <% end %>
+        </div>
+
+        <% if @selected_collection %>
+          <p class="mt-4 font-medium text-zinc-100"><%= @selected_collection[:label] %>
+            <span class="text-sm font-normal text-zinc-500"><%= pluralize(@selected_collection[:items].size, "title") %></span>
+          </p>
+          <ul class="mt-3 divide-y divide-zinc-800">
+            <% @selected_collection[:items].each do |item| %>
+              <li data-player-target="track" data-path="<%= item[:path] %>"
+                  class="flex items-center justify-between gap-3 py-2 <%= item[:path] == @now_playing[:path] ? "text-emerald-300" : "text-zinc-300" %>">
+                <span><%= item[:title] %></span>
+                <%= button_to "Play", play_video_path, method: :post,
+                      params: { collection: @selected_collection[:name], path: item[:path] },
+                      form_class: "inline",
+                      class: library_play_class %>
+              </li>
+            <% end %>
+          </ul>
+        <% end %>
+      <% else %>
+        <p class="mt-4 text-amber-400">Video library is not mounted at <span class="font-mono">/mnt/movies</span> or <span class="font-mono">/mnt/shows</span>.</p>
+      <% end %>
+    <% end %>
+  </section>
+</div>
