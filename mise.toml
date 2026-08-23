@@ -6,4 +6,4 @@ idiomatic_version_file_enable_tools = ["ruby"]
 
 [tools]
 node = "24.18.0"
-yarn = "1.22.22"
+aube = "1.41.0"

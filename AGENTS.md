@@ -7,7 +7,7 @@ Household DJ / playlist server. Rails app. Dev host is **haruna** (`192.168.72.3
 1. Rails server in front of the shop music queue (NFS library on gluttony, player on haruna).
 2. Do **not** name it Mixalot / Sir Mix-a-Lot.
 3. GitHub canonical when the GitHub remote exists; LAN bare is `git@gluttony:Ruby-on-Rails-Wizardry/mixomancer.git`.
-4. Host tools via **mise** (Ruby, Node, Yarn). Do not install rbenv/nvm/volta in parallel.
+4. Host tools via **mise** (Ruby, Node) plus **aube** for JS packages (`mise use aube`). Do not install rbenv/nvm/volta/yarn in parallel.
 5. Never commit secrets or `config/master.key`.
 
 ## Facts
@@ -17,7 +17,8 @@ Household DJ / playlist server. Rails app. Dev host is **haruna** (`192.168.72.3
 | Dev host | haruna `192.168.72.3` / `haruna.lan` / `mixomancer.lan` |
 | App path | `/home/rob/Ruby-on-Rails-Wizardry/mixomancer` |
 | Ruby | 4.0.6 (mise + `.ruby-version`) |
-| Node / Yarn | 24.18.0 / 1.22.22 (mise) |
+| Node | 24.18.0 (mise) |
+| aube | mise-managed ([aube.jdx.dev](https://aube.jdx.dev)) |
 | Dev URL | `http://192.168.72.3:3000` |
 | Library NFS | `/mnt/audio_cds` → gluttony `audio_cds` |
 | Current mpv queue | `audio-cds-queue.service` (analog jack) |

@@ -27,7 +27,7 @@ Toolchain is **mise** on the host (not Docker):
 
 - Ruby **4.0.6** (from `.ruby-version` / Gemfile)
 - Node.js **24.18.0**
-- Yarn **1.22.22**
+- **aube** ([aube.jdx.dev](https://aube.jdx.dev), `/ob/`) — jdx’s Node package manager (the JS counterpart to mise). Not Yarn/npm/pnpm.
 
 ```bash
 ssh haruna

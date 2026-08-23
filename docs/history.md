@@ -10,7 +10,7 @@ How the shop music path existed **before** this Rails app. Meadow Circle is one 
 4. **Library** — gluttony has no `/usr/share/sounds`. NAS WAVs live at `/mnt/tnas/md1/appdata/audio_cds` (also `/srv/nfs/appdata/audio_cds`): seven guitar tracks plus hour-long forest / rain / songbirds loops.
 5. **NFS client** — haruna mounts `192.168.72.2:/appdata/audio_cds` at `/mnt/audio_cds` (NFSv4.2, fstab + systemd automount).
 6. **mpv queue** — `audio-cds-queue.service` (user `rob`) plays `/home/rob/audio-cds-queue/playlist.m3u` with mpv, looping. First run used Bluetooth; P27 dropped and audio fell through to `auto_null`. Queue stopped. Output moved to the **built-in analog HP jack** (`alsa_output.pci-0000_00_0e.0.analog-stereo`); `rob` added to group `audio`; Master unmuted 80%.
-7. **This repo** — Rails 8.1.3 / Ruby 4.0.6 via **mise** on haruna (Node 24.18.0 + Yarn 1.22.22). Dev server on `:3000`.
+7. **This repo** — Rails 8.1.3 / Ruby 4.0.6 via **mise** on haruna (Node 24.18.0). JS packages use **aube** (jdx, [aube.jdx.dev](https://aube.jdx.dev)), not Yarn. Dev server on `:3000`.
 
 ## Playlist order (mpv unit)
 
