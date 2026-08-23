@@ -4,8 +4,7 @@
 <div class="display-shell flex flex-col"
      data-controller="player"
      data-player-url-value="<%= now_playing_path %>"
-     data-player-seek-url-value="<%= seek_path %>"
-     data-player-replay-url-value="<%= replay_path %>">
+     data-player-seek-url-value="<%= seek_path %>">
   <div data-player-target="backdrop"
        class="display-backdrop<%= " is-on" if artwork %>"
        <% if artwork %>style="background-image: url('<%= artwork %>')"<% end %>></div>
@@ -28,10 +27,6 @@
   <div class="mt-[clamp(0.5rem,2vmin,2.5rem)] shrink-0">
     <div class="mb-[clamp(0.35rem,1.4vmin,0.75rem)] flex items-end justify-between gap-3">
       <div data-player-target="meta" class="min-w-0 <%= "hidden" if @now_playing[:state] == "stopped" %>">
-        <button type="button" data-action="player#replay"
-                class="display-replay mb-1 rounded-md border border-zinc-600 bg-zinc-800 px-3 py-1 text-xs font-semibold text-zinc-100 hover:bg-zinc-700 sm:text-sm">
-          Replay 30s
-        </button>
         <p class="display-time whitespace-nowrap font-mono text-zinc-400">
           <span data-player-target="position"><%= @now_playing[:position_label] %></span>
           /

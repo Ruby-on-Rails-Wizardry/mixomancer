@@ -1,10 +1,14 @@
 <% content_for :title, "Mixomancer" %>
+<% artwork = Artwork.url_for(title: @now_playing[:title], album: @now_playing[:album]) %>
 
-<div class="w-full space-y-8"
+<div class="player-shell w-full space-y-8"
      data-controller="player"
      data-player-url-value="<%= now_playing_path %>"
      data-player-seek-url-value="<%= seek_path %>"
      data-player-replay-url-value="<%= replay_path %>">
+  <div data-player-target="backdrop"
+       class="display-backdrop<%= " is-on" if artwork %>"
+       <% if artwork %>style="background-image: url('<%= artwork %>')"<% end %>></div>
   <section class="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
     <div class="flex flex-wrap items-start justify-between gap-4">
       <div>

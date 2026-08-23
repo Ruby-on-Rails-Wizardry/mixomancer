@@ -43,6 +43,7 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_no_match "Household DJ for Meadow Circle", @response.body
     assert_select "button", text: "Replay 30s"
     assert_select "[role=tablist]", count: 0
+    assert_select "[data-player-target=backdrop].is-on[style*=calming-guitar]"
   end
 
   test "root renders now playing and transport controls" do
@@ -87,8 +88,17 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_match "Scan to control", @response.body
     assert_match "http://haruna.local:3000", @response.body
     assert_select "svg"
-    assert_select "button", text: "Replay 30s"
+    assert_select "button", text: "Replay 30s", count: 0
     assert_select "[data-player-target=backdrop]"
+  end
+
+  test "opera android can load the player" do
+    get root_url, headers: {
+      "User-Agent" => "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.6422.165 Mobile Safari/537.36 OPR/83.0.4254.73364"
+    }
+    assert_response :success
+    assert_select "h1", "Now playing"
+    assert_no_match "Your browser is not supported", @response.body
   end
 
   test "about page has the intro blurb" do
