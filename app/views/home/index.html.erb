@@ -1,0 +1,55 @@
+<% content_for :title, "Mixomancer" %>
+
+<div class="w-full max-w-3xl space-y-8">
+  <header>
+    <p class="text-sm font-medium uppercase tracking-wide text-violet-400">Ruby on Rails Wizardry</p>
+    <h1 class="mt-1 text-4xl font-bold tracking-tight text-zinc-50">Mixomancer</h1>
+    <p class="mt-3 text-lg text-zinc-300">
+      Household DJ for Meadow Circle. This Rails server will run the shop music queue.
+      Groundwork already on haruna: NFS library from gluttony, mpv playlist, analog jack.
+    </p>
+    <p class="mt-2 text-sm text-zinc-500">
+      Ruby <%= RUBY_VERSION %> · Rails <%= Rails.version %> · host <%= Socket.gethostname %>
+    </p>
+  </header>
+
+  <section class="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-zinc-400">Library</h2>
+    <% if @library_mounted %>
+      <p class="mt-1 font-mono text-sm text-emerald-400"><%= @library_root %></p>
+      <ul class="mt-4 space-y-3">
+        <% @albums.each do |album| %>
+          <li>
+            <p class="font-medium text-zinc-100"><%= album[:name] %></p>
+            <p class="text-sm text-zinc-500"><%= album[:tracks].size %> tracks</p>
+            <ul class="mt-1 list-disc pl-5 text-sm text-zinc-400">
+              <% album[:tracks].each do |track| %>
+                <li><%= track %></li>
+              <% end %>
+            </ul>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p class="mt-2 text-amber-400">NFS library is not mounted at <span class="font-mono"><%= @library_root %></span>.</p>
+    <% end %>
+  </section>
+
+  <section class="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-zinc-400">mpv queue (<%= HomeController::QUEUE_UNIT %>)</h2>
+    <p class="mt-2">
+      <% if @queue_active %>
+        <span class="rounded-full bg-emerald-900/80 px-3 py-1 text-sm text-emerald-300">active</span>
+      <% else %>
+        <span class="rounded-full bg-zinc-800 px-3 py-1 text-sm text-zinc-400">inactive</span>
+      <% end %>
+    </p>
+    <% if @playlist_tracks.any? %>
+      <ol class="mt-4 list-decimal space-y-1 pl-5 text-sm text-zinc-300">
+        <% @playlist_tracks.each do |track| %>
+          <li class="font-mono"><%= track.sub(%r{\A/mnt/audio_cds/}, "") %></li>
+        <% end %>
+      </ol>
+    <% end %>
+  </section>
+</div>
