@@ -35,6 +35,7 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_select "nav a", text: "Mixomancer"
     assert_select "nav a", text: "Player"
     assert_select "nav a", text: "Library"
+    assert_select "nav a", text: "Remotes"
     assert_select "nav a", text: "About"
     assert_select "h1", "Now playing"
     assert_select "[data-player-target=title]", "Bittersweet"
@@ -42,6 +43,7 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_select "form[action=?]", library_path, count: 0
     assert_no_match "Household DJ for Meadow Circle", @response.body
     assert_select "button", text: "Replay 30s"
+    assert_select "button", text: "Forward 30s"
     assert_select "[role=tablist]", count: 0
     assert_select "[data-player-target=backdrop].is-on[style*=calming-guitar]"
   end
@@ -89,6 +91,7 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_match "http://haruna.local:3000", @response.body
     assert_select "svg"
     assert_select "button", text: "Replay 30s", count: 0
+    assert_select "button", text: "Forward 30s", count: 0
     assert_select "[data-player-target=backdrop]"
   end
 

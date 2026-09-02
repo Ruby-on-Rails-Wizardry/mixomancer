@@ -4,7 +4,7 @@ class PlaybackTest < ActiveSupport::TestCase
   class FakeMedia
     attr_accessor :status, :played_paths, :play_path_arg, :stopped, :played
 
-    attr_accessor :seeked, :replayed
+    attr_accessor :seeked, :replayed, :forwarded
 
     def initialize(status = { state: "stopped" })
       @status = status
@@ -14,6 +14,7 @@ class PlaybackTest < ActiveSupport::TestCase
       @played = false
       @seeked = nil
       @replayed = nil
+      @forwarded = nil
     end
 
     def now_playing
@@ -61,6 +62,11 @@ class PlaybackTest < ActiveSupport::TestCase
 
     def replay(seconds)
       @replayed = seconds
+      true
+    end
+
+    def forward(seconds)
+      @forwarded = seconds
       true
     end
   end
@@ -127,6 +133,13 @@ class PlaybackTest < ActiveSupport::TestCase
     assert @playback.seek(40)
     assert_equal 40, @video.seeked
     assert_nil @audio.seeked
+  end
+
+  test "forward goes to video when a movie is up" do
+    @video.status = { state: "playing" }
+    assert @playback.forward(30)
+    assert_equal 30, @video.forwarded
+    assert_nil @audio.forwarded
   end
 
   test "play resumes paused audio on the kiosk" do

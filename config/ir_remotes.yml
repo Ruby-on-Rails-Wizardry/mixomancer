@@ -1,0 +1,102 @@
+# Learned 2026-08-29 from the handhelds onto ir-mc-489d31e61010.
+# Mixomancer blasts protocol JSON through Haruna's ir_bridge (GPIO 18).
+sceptre:
+  name: Sceptre TV
+  blaster: haruna
+  protocol: sony
+  address: 1
+  bits: 12
+  freq: 40000
+  repeat: 3
+  buttons:
+    power: { command: 21, label: Power, style: power, repeat: 5 }
+    info: { command: 60, label: Info, style: accent }
+    digit_1: { command: 0, label: "1", style: digit }
+    digit_2: { command: 1, label: "2", style: digit }
+    digit_3: { command: 2, label: "3", style: digit }
+    digit_4: { command: 3, label: "4", style: digit }
+    digit_5: { command: 4, label: "5", style: digit }
+    digit_6: { command: 5, label: "6", style: digit }
+    digit_7: { command: 6, label: "7", style: digit }
+    digit_8: { command: 7, label: "8", style: digit }
+    digit_9: { command: 8, label: "9", style: digit }
+    dash: { command: 32, label: "−", style: digit }
+    digit_0: { command: 9, label: "0", style: digit }
+    last: { command: 59, label: R, style: accent }
+    vol_up: { command: 18, label: VOL+, style: accent, hold: true }
+    ch_up: { command: 16, label: CH+, style: accent, hold: true }
+    up: { command: 116, label: "▲", style: nav }
+    left: { command: 52, label: "◀", style: nav }
+    enter: { command: 11, label: ENTER, style: nav }
+    right: { command: 51, label: "▶", style: nav }
+    down: { command: 117, label: "▼", style: nav }
+    vol_down: { command: 19, label: VOL−, style: accent, hold: true }
+    ch_down: { command: 17, label: CH−, style: accent, hold: true }
+    menu: { command: 96, label: Menu, style: accent }
+    guide: { command: 101, label: Guide, style: accent }
+    exit: { command: 22, label: Exit, style: accent }
+    source: { command: 37, label: Source, style: accent }
+    cc: { command: 35, label: CC, style: accent }
+    mute: { command: 20, label: Mute, style: accent }
+    fav: { command: 24, label: Fav, style: accent }
+    fav_add_del: { command: 36, label: F.ADD, style: accent }
+    sleep: { command: 54, label: Sleep, style: accent }
+    usb: { command: 99, label: USB, style: digit }
+    ypbpr: { command: 69, label: YPbPr, style: digit }
+    hdmi: { command: 57, label: HDMI, style: digit }
+    power2: { command: 109, label: Power, style: power }
+    color_a: { command: 122, label: A, style: color-a }
+    color_b: { command: 123, label: B, style: color-b }
+    color_c: { command: 124, label: C, style: color-c }
+    color_d: { command: 125, label: D, style: color-d }
+  layout:
+    - [power, info]
+    - [digit_1, digit_2, digit_3]
+    - [digit_4, digit_5, digit_6]
+    - [digit_7, digit_8, digit_9]
+    - [dash, digit_0, last]
+    - [vol_up, up, ch_up]
+    - [left, enter, right]
+    - [vol_down, down, ch_down]
+    - [menu, guide, exit]
+    - [source, cc, mute]
+    - [fav, fav_add_del, sleep]
+    - [usb, ypbpr, hdmi, power2]
+    - [color_a, color_b, color_c, color_d]
+
+soundbar:
+  name: Soundbar
+  blaster: haruna
+  protocol: nec
+  address: 46723
+  bits: 32
+  freq: 38000
+  repeat: 1
+  note: Haruna's IR LED is aimed at the TV. The bar may need its own emitter, or a bounce off the wall.
+  buttons:
+    power: { command: 77, label: Power, style: power }
+    mute: { command: 67, label: Mute, style: accent }
+    pair: { command: 28, label: PAIR, style: digit }
+    input: { command: 29, label: INPUT, style: digit }
+    vol_up: { command: 11, label: VOL+, style: accent, hold: true }
+    next: { command: 17, label: "▶▶", style: nav }
+    vol_down: { command: 14, label: VOL−, style: accent, hold: true }
+    prev: { command: 16, label: "◀◀", style: nav }
+    play: { command: 13, label: RESET, style: nav }
+    music: { command: 69, label: MUSIC, style: digit }
+    news: { command: 78, label: NEWS, style: digit }
+    movie: { command: 71, label: MOVIE, style: digit }
+    treb_up: { command: 26, label: TREB+, style: digit }
+    bass_up: { command: 23, label: BASS+, style: digit }
+    treb_down: { command: 66, label: TREB−, style: digit }
+    eq_3d: { command: 76, label: 3D, style: nav }
+    bass_down: { command: 24, label: BASS−, style: digit }
+  layout:
+    - [power, mute]
+    - [pair, input]
+    - [prev, vol_up, next]
+    - [~, play, ~]
+    - [~, vol_down, ~]
+    - [music, news, movie]
+    - [treb_up, ~, bass_up]
+    - [treb_down, eq_3d, bass_down]

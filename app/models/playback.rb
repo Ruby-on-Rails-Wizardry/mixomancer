@@ -73,4 +73,11 @@ class Playback
 
     @audio.replay(seconds)
   end
+
+  def forward(seconds = 30)
+    video = @video.now_playing
+    return @video.forward(seconds) if video[:state] != "stopped"
+
+    @audio.forward(seconds)
+  end
 end

@@ -143,13 +143,21 @@ class VideoQueue
   end
 
   def replay(seconds = 30)
-    status = now_playing
-    return false if status[:state] == "stopped"
+    skip(-seconds.to_f)
+  end
 
-    @mpv.command([ "seek", -seconds.to_f, "relative" ])
+  def forward(seconds = 30)
+    skip(seconds.to_f)
   end
 
   private
+
+  def skip(seconds)
+    status = now_playing
+    return false if status[:state] == "stopped"
+
+    @mpv.command([ "seek", seconds.to_f, "relative" ])
+  end
 
   def unit_active?
     @runner.call("is-active", "--quiet", UNIT)

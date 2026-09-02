@@ -127,6 +127,13 @@ class AudioQueueTest < ActiveSupport::TestCase
     assert_equal [ [ "seek", -30.0, "relative" ] ], @mpv.commands
   end
 
+  test "forward seeks ahead relatively" do
+    @runner.active = true
+    @mpv.props.merge!("pause" => false, "time-pos" => 90, "duration" => 200)
+    assert @queue.forward(30)
+    assert_equal [ [ "seek", 30.0, "relative" ] ], @mpv.commands
+  end
+
   test "play unpauses when paused" do
     @runner.active = true
     @mpv.props["pause"] = true

@@ -1,0 +1,42 @@
+<% content_for :title, "#{@remote.name} · Mixomancer" %>
+
+<div class="mx-auto w-full max-w-md space-y-4">
+  <div class="flex items-end justify-between gap-3">
+    <div>
+      <p class="text-xs font-medium uppercase tracking-wide text-violet-400"><%= link_to "Remotes", remotes_path, class: "hover:text-violet-300" %></p>
+      <h1 class="text-2xl font-bold tracking-tight text-zinc-50"><%= @remote.name %></h1>
+    </div>
+    <% if @blaster_online %>
+      <span class="rounded-full bg-emerald-900/80 px-3 py-1 text-xs text-emerald-300">online</span>
+    <% else %>
+      <span class="rounded-full bg-amber-900/80 px-3 py-1 text-xs text-amber-300">offline</span>
+    <% end %>
+  </div>
+
+  <% if @remote.note.present? %>
+    <p class="text-sm text-zinc-400"><%= @remote.note %></p>
+  <% end %>
+
+  <div class="remote-face"
+       data-controller="ir-remote"
+       data-ir-remote-url-template-value="<%= press_remote_path(@remote.id, command: "power").sub(%r{/power\z}, "/COMMAND") %>">
+    <% @remote.rows.each do |row| %>
+      <div class="remote-row" style="grid-template-columns: repeat(<%= row.size %>, minmax(0, 1fr));">
+        <% row.each do |slot| %>
+          <% if slot == :spacer %>
+            <span class="remote-spacer" aria-hidden="true"></span>
+          <% else %>
+            <button type="button"
+                    class="remote-key is-<%= slot[:style] || "digit" %>"
+                    data-command="<%= slot[:id] %>"
+                    data-hold="<%= slot[:hold] ? "true" : "false" %>"
+                    data-action="pointerdown->ir-remote#press pointerup->ir-remote#release pointerleave->ir-remote#release pointercancel->ir-remote#release">
+              <%= slot[:label] %>
+            </button>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+    <p class="remote-brand"><%= @remote.id == "sceptre" ? "SCEPTRE" : "P" %></p>
+  </div>
+</div>

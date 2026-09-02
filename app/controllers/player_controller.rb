@@ -57,4 +57,14 @@ class PlayerController < ApplicationController
       head :unprocessable_entity
     end
   end
+
+  def forward
+    seconds = (params[:seconds].presence || 30).to_f
+    if Playback.build.forward(seconds)
+      expires_now
+      render json: Playback.build.now_playing
+    else
+      head :unprocessable_entity
+    end
+  end
 end

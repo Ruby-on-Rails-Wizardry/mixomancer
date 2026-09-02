@@ -1,0 +1,29 @@
+<% content_for :title, "Remotes · Mixomancer" %>
+
+<div class="mx-auto w-full max-w-3xl space-y-6">
+  <header>
+    <h1 class="text-3xl font-bold tracking-tight text-zinc-50">Remotes</h1>
+    <p class="mt-2 text-sm text-zinc-400">
+      Buttons go to Haruna's ESP32 IR blaster
+      (<span class="font-mono">ir-mc.lan</span> / <span class="font-mono">192.168.72.20</span>, GPIO 18).
+    </p>
+    <p class="mt-2">
+      <% if @blaster_online %>
+        <span class="rounded-full bg-emerald-900/80 px-3 py-1 text-sm text-emerald-300">blaster online</span>
+      <% else %>
+        <span class="rounded-full bg-amber-900/80 px-3 py-1 text-sm text-amber-300">blaster offline</span>
+      <% end %>
+    </p>
+  </header>
+
+  <ul class="grid gap-4 sm:grid-cols-2">
+    <% @remotes.each do |remote| %>
+      <li>
+        <%= link_to remote_path(remote.id), class: "block rounded-xl border border-zinc-800 bg-zinc-900/60 p-5 hover:border-violet-500/60" do %>
+          <p class="text-lg font-semibold text-zinc-50"><%= remote.name %></p>
+          <p class="mt-1 text-sm text-zinc-400"><%= remote.protocol.upcase %> · <%= remote.buttons.size %> keys</p>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+</div>

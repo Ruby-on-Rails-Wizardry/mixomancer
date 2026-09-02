@@ -114,6 +114,13 @@ class VideoQueueTest < ActiveSupport::TestCase
     assert_includes @mpv.commands, [ "seek", 50.0, "absolute" ]
   end
 
+  test "forward seeks ahead relatively" do
+    @runner.active = true
+    @mpv.props.merge!("pause" => false, "path" => "/mnt/movies/the_legend_of_johnny_lingo.avi", "time-pos" => 90, "duration" => 200)
+    assert @queue.forward(30)
+    assert_includes @mpv.commands, [ "seek", 30.0, "relative" ]
+  end
+
   test "quit stops the unit" do
     @runner.active = true
     assert @queue.quit

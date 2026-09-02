@@ -17,7 +17,12 @@ Rails.application.routes.draw do
   post "play_video", to: "player#play_video", as: :play_video
   post "seek", to: "player#seek", as: :seek
   post "replay", to: "player#replay", as: :replay
+  post "forward", to: "player#forward", as: :forward
   get "now_playing", to: "player#now_playing", as: :now_playing
+
+  resources :remotes, only: [ :index, :show ]
+  post "remotes/:id/:command", to: "remotes#press", as: :press_remote, constraints: { command: /[a-z0-9_]+/ }
 
   root "home#index"
 end
+

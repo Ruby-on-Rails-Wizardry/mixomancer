@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["badge", "title", "album", "position", "duration", "index", "progress", "play", "stop", "meta", "track", "bar", "backdrop"]
-  static values = { url: String, seekUrl: String, replayUrl: String, interval: { type: Number, default: 2000 } }
+  static values = { url: String, seekUrl: String, replayUrl: String, forwardUrl: String, interval: { type: Number, default: 2000 } }
 
   connect() {
     this.dragging = false
@@ -36,7 +36,12 @@ export default class extends Controller {
 
   replay(event) {
     event.preventDefault()
-    this.commitReplay(30)
+    this.commitRelativeSeek(this.replayUrlValue, 30)
+  }
+
+  forward(event) {
+    event.preventDefault()
+    this.commitRelativeSeek(this.forwardUrlValue, 30)
   }
 
   async refresh() {
@@ -136,11 +141,11 @@ export default class extends Controller {
     return (x / rect.width) * 100
   }
 
-  async commitReplay(seconds) {
-    if (!this.hasReplayUrlValue) return
+  async commitRelativeSeek(url, seconds) {
+    if (!url) return
     const token = document.querySelector('meta[name="csrf-token"]')?.content
     try {
-      const response = await fetch(this.replayUrlValue, {
+      const response = await fetch(url, {
         method: "POST",
         headers: {
           Accept: "application/json",

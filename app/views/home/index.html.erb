@@ -5,7 +5,8 @@
      data-controller="player"
      data-player-url-value="<%= now_playing_path %>"
      data-player-seek-url-value="<%= seek_path %>"
-     data-player-replay-url-value="<%= replay_path %>">
+     data-player-replay-url-value="<%= replay_path %>"
+     data-player-forward-url-value="<%= forward_path %>">
   <div data-player-target="backdrop"
        class="display-backdrop<%= " is-on" if artwork %>"
        <% if artwork %>style="background-image: url('<%= artwork %>')"<% end %>></div>
@@ -35,10 +36,14 @@
     <p data-player-target="album" class="mt-1 text-sm text-zinc-400"><%= @now_playing[:album] %></p>
 
     <div data-player-target="meta" class="mt-4 <%= "hidden" if @now_playing[:state] == "stopped" %>">
-      <div class="mb-2 flex items-center gap-3">
+      <div class="mb-2 flex items-center justify-between gap-3">
         <button type="button" data-action="player#replay"
                 class="rounded-md border border-zinc-600 bg-zinc-800 px-3 py-1 text-xs font-semibold text-zinc-100 hover:bg-zinc-700">
           Replay 30s
+        </button>
+        <button type="button" data-action="player#forward"
+                class="rounded-md border border-zinc-600 bg-zinc-800 px-3 py-1 text-xs font-semibold text-zinc-100 hover:bg-zinc-700">
+          Forward 30s
         </button>
       </div>
       <p class="mb-2 font-mono text-sm text-zinc-400">

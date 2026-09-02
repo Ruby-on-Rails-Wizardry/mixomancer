@@ -108,6 +108,19 @@ class PlayerControllerTest < ActionDispatch::IntegrationTest
     assert_equal 30, replayed
   end
 
+  test "forward skips ahead and returns json" do
+    forwarded = nil
+    playback = fake_playback
+    playback.define_singleton_method(:forward) { |seconds| forwarded = seconds; true }
+    playback.define_singleton_method(:now_playing) { { state: "playing", percent: 20 } }
+    Playback.factory = -> { playback }
+
+    post forward_url, params: { seconds: 30 }, as: :json
+
+    assert_response :success
+    assert_equal 30, forwarded
+  end
+
   test "now playing returns json" do
     playback = fake_playback
     playback.define_singleton_method(:now_playing) do
