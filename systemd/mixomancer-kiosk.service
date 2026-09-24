@@ -8,13 +8,15 @@ ConditionPathExists=/usr/bin/chromium
 
 [Service]
 Type=simple
-User=rob
-Group=rob
-SupplementaryGroups=video seat
-WorkingDirectory=/home/rob/Ruby-on-Rails-Wizardry/mixomancer
-Environment=XDG_RUNTIME_DIR=/run/user/1000
+User=haruna
+Group=haruna
+SupplementaryGroups=video seat render input
+WorkingDirectory=/opt/mixomancer
+Environment=XDG_RUNTIME_DIR=/run/user/2003
+Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/2003/bus
 Environment=XDG_SESSION_TYPE=wayland
 Environment=WLR_LIBINPUT_NO_DEVICES=1
+Environment=MIXOMANCER_KIOSK_PROFILE=/home/haruna/.config/mixomancer-kiosk
 StandardInput=tty
 StandardOutput=journal
 StandardError=journal
@@ -22,7 +24,7 @@ TTYPath=/dev/tty7
 TTYReset=yes
 TTYVHangup=yes
 ExecStartPre=+/usr/bin/chvt 7
-ExecStart=/home/rob/Ruby-on-Rails-Wizardry/mixomancer/bin/kiosk
+ExecStart=/opt/mixomancer/bin/kiosk
 Restart=on-failure
 RestartSec=3
 

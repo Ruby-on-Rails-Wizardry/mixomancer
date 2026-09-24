@@ -6,11 +6,12 @@ OnSuccess=mixomancer-kiosk.service
 
 [Service]
 Type=simple
-User=rob
-Group=rob
-SupplementaryGroups=video audio
-Environment=XDG_RUNTIME_DIR=/run/user/1000
-Environment=PULSE_SERVER=unix:/run/user/1000/pulse/native
+User=haruna
+Group=haruna
+SupplementaryGroups=video audio render
+Environment=XDG_RUNTIME_DIR=/run/user/2003
+Environment=PULSE_SERVER=unix:/run/user/2003/pulse/native
+Environment=MIXOMANCER_STATE_DIR=/var/lib/mixomancer
 StandardInput=tty
 StandardOutput=journal
 StandardError=journal
@@ -18,5 +19,5 @@ TTYPath=/dev/tty7
 TTYReset=yes
 TTYVHangup=yes
 ExecStartPre=+/usr/bin/chvt 7
-ExecStart=/home/rob/Ruby-on-Rails-Wizardry/mixomancer/bin/play-video
+ExecStart=/opt/mixomancer/bin/play-video
 Restart=no

@@ -2,7 +2,7 @@
 # Play a library video on HDMI + analog jack. Path comes from video-current.
 set -euo pipefail
 
-PATH_FILE="${VIDEO_PATH_FILE:-/home/rob/audio-cds-queue/video-current}"
+PATH_FILE="${VIDEO_PATH_FILE:-/var/lib/mixomancer/video-current}"
 RUNTIME="${XDG_RUNTIME_DIR:-/run/user/1000}"
 export XDG_RUNTIME_DIR="$RUNTIME"
 export PULSE_SERVER="unix:${RUNTIME}/pulse/native"
@@ -19,8 +19,8 @@ esac
 amixer -c 0 sset Master unmute 80% >/dev/null || true
 
 sink=""
-for _ in $(seq 1 20); do
-  sink="$(pactl list short sinks 2>/dev/null | awk '/alsa_output.*analog/ {print $2; exit}')"
+for _ in $(seq 1 30); do
+  sink="$(pactl list short sinks 2>/dev/null | awk '/alsa_output.*analog/ {print $2; exit}' || true)"
   [[ -n $sink ]] && break
   sleep 1
 done

@@ -1,16 +1,16 @@
 [Unit]
 Description=Mixomancer HDMI splash (no console login)
-Documentation=file:///home/rob/Ruby-on-Rails-Wizardry/mixomancer/systemd/mixomancer-display.service
+Documentation=file:///opt/mixomancer/systemd/mixomancer-display.service
 After=systemd-udev-settle.service
 Wants=systemd-udev-settle.service
-ConditionPathExists=/home/rob/Ruby-on-Rails-Wizardry/mixomancer/public/display.png
+ConditionPathExists=/opt/mixomancer/public/display.png
 
 [Service]
 Type=simple
-User=rob
-Group=rob
-SupplementaryGroups=video
-WorkingDirectory=/home/rob/Ruby-on-Rails-Wizardry/mixomancer
+User=haruna
+Group=haruna
+SupplementaryGroups=video render
+WorkingDirectory=/opt/mixomancer
 StandardInput=tty
 StandardOutput=journal
 StandardError=journal

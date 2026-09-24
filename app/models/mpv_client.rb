@@ -4,7 +4,9 @@ require "timeout"
 
 # JSON IPC client for the audio-cds-queue mpv process.
 class MpvClient
-  SOCKET = File.join(ENV.fetch("XDG_RUNTIME_DIR", "/run/user/1000"), "mpv-audio-cds.sock")
+  SOCKET = ENV.fetch("MIXOMANCER_MPV_SOCKET") {
+    File.join(ENV.fetch("XDG_RUNTIME_DIR", "/run/user/2003"), "mpv-audio-cds.sock")
+  }
 
   def initialize(path: SOCKET)
     @path = path

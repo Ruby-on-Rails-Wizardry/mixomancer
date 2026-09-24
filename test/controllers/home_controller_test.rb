@@ -88,7 +88,7 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_select "nav", count: 0
     assert_select "[data-player-target=title]", "Bittersweet"
     assert_match "Scan to control", @response.body
-    assert_match "http://haruna.local:3000", @response.body
+    assert_match "http://haruna.lan", @response.body
     assert_select "svg"
     assert_select "button", text: "Replay 30s", count: 0
     assert_select "button", text: "Forward 30s", count: 0

@@ -1,0 +1,21 @@
+[Unit]
+Description=Play the Mixomancer audio queue on haruna's analog jack
+After=user@2003.service
+Wants=user@2003.service
+
+[Service]
+Type=simple
+User=haruna
+Group=haruna
+SupplementaryGroups=audio
+Environment=XDG_RUNTIME_DIR=/run/user/2003
+Environment=PULSE_SERVER=unix:/run/user/2003/pulse/native
+Environment=MIXOMANCER_STATE_DIR=/var/lib/mixomancer
+WorkingDirectory=/var/lib/mixomancer
+ExecStart=/opt/mixomancer/bin/play-audio
+SuccessExitStatus=SIGTERM SIGINT
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

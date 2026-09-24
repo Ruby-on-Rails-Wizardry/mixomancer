@@ -1,0 +1,15 @@
+haruna ALL=(root) NOPASSWD: /usr/bin/systemctl start mixomancer-kiosk.service
+haruna ALL=(root) NOPASSWD: /usr/bin/systemctl stop mixomancer-kiosk.service
+haruna ALL=(root) NOPASSWD: /usr/bin/systemctl restart mixomancer-kiosk.service
+haruna ALL=(root) NOPASSWD: /usr/bin/systemctl start mixomancer-video.service
+haruna ALL=(root) NOPASSWD: /usr/bin/systemctl stop mixomancer-video.service
+haruna ALL=(root) NOPASSWD: /usr/bin/systemctl restart mixomancer-video.service
+haruna ALL=(root) NOPASSWD: /usr/bin/systemctl is-active mixomancer-kiosk.service
+haruna ALL=(root) NOPASSWD: /usr/bin/systemctl is-active mixomancer-video.service
+haruna ALL=(root) NOPASSWD: /usr/bin/systemctl is-active --quiet mixomancer-kiosk.service
+haruna ALL=(root) NOPASSWD: /usr/bin/systemctl is-active --quiet mixomancer-video.service
+haruna ALL=(root) NOPASSWD: /usr/bin/systemctl start audio-cds-queue.service
+haruna ALL=(root) NOPASSWD: /usr/bin/systemctl stop audio-cds-queue.service
+haruna ALL=(root) NOPASSWD: /usr/bin/systemctl restart audio-cds-queue.service
+haruna ALL=(root) NOPASSWD: /usr/bin/systemctl is-active audio-cds-queue.service
+haruna ALL=(root) NOPASSWD: /usr/bin/systemctl is-active --quiet audio-cds-queue.service

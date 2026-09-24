@@ -14,24 +14,23 @@ Household DJ / playlist server. Rails app. Dev host is **haruna** (`192.168.72.3
 
 | Item | Value |
 |------|--------|
-| Dev host | haruna `192.168.72.3` / `haruna.lan` / `mixomancer.lan` |
-| App path | `/home/rob/Ruby-on-Rails-Wizardry/mixomancer` |
-| Ruby | 4.0.6 (mise + `.ruby-version`) |
-| Node | 24.18.0 (mise) |
-| aube | mise-managed ([aube.jdx.dev](https://aube.jdx.dev)) |
-| Dev URL | `http://192.168.72.3:3000` |
+| Host | haruna `192.168.72.3` / `haruna.lan` / `mixomancer.lan` |
+| Service user | `haruna` (uid 2003, machine account). Not `rob`. |
+| App path | `/opt/mixomancer` (checkout may also exist under `rob`'s home) |
+| Ruby | 4.0.6 (mise for user `haruna`) |
+| URL | `http://haruna.lan` (Thruster on port 80, Puma on `127.0.0.1:3000`) |
 | Library NFS | `/mnt/audio_cds` → gluttony `audio_cds` |
-| Current mpv queue | `audio-cds-queue.service` (analog jack) |
+| State | `/var/lib/mixomancer` (playlist, session, video-current) |
+| mpv queue | system unit `audio-cds-queue.service`, user `haruna`, analog jack |
+| Audio | PipeWire user session of `haruna` (linger). Do not start `rob`'s PipeWire on this host. |
+| Notes | [docs/production.md](docs/production.md) — layout, deploy, and the traps |
 
 ## Common tasks
 
 ```bash
 ssh haruna
-cd ~/Ruby-on-Rails-Wizardry/mixomancer
-bin/dev
-# or:
-systemctl --user -M rob@ restart mixomancer
-
-git remote -v   # gluttony
-git push gluttony
+sudo systemctl restart mixomancer
+sudo systemctl status mixomancer audio-cds-queue mixomancer-kiosk
 ```
+
+Desk checkout remote is `origin`. Haruna checkout remote is `gluttony`. Same bare repo. Deploy steps and the reasons not to put this back on user `rob` are in [docs/production.md](docs/production.md).

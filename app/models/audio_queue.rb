@@ -1,8 +1,9 @@
 # Shop music queue: systemd unit + mpv IPC on haruna.
 class AudioQueue
   UNIT = "audio-cds-queue.service"
-  PLAYLIST = Pathname.new("/home/rob/audio-cds-queue/playlist.m3u")
-  SESSION_PLAYLIST = Pathname.new("/home/rob/audio-cds-queue/session.m3u")
+  STATE_DIR = Pathname.new(ENV.fetch("MIXOMANCER_STATE_DIR", "/var/lib/mixomancer"))
+  PLAYLIST = Pathname.new(ENV.fetch("MIXOMANCER_PLAYLIST", STATE_DIR.join("playlist.m3u")))
+  SESSION_PLAYLIST = STATE_DIR.join("session.m3u")
   LIBRARY = Pathname.new("/mnt/audio_cds")
 
   class << self
@@ -61,7 +62,7 @@ class AudioQueue
 
   def initialize(mpv: MpvClient.new, runner: nil, session_playlist: SESSION_PLAYLIST, library: LIBRARY)
     @mpv = mpv
-    @runner = runner || ->(*args) { system("systemctl", "--user", *args) }
+    @runner = runner || ->(*args) { system("sudo", "-n", "systemctl", *args) }
     @session_playlist = Pathname.new(session_playlist)
     @library = Pathname.new(library)
   end

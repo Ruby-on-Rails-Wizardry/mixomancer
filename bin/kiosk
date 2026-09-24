@@ -2,14 +2,15 @@
 # Full-screen Mixomancer on the HDMI output. No login session required.
 set -euo pipefail
 
-URL="${MIXOMANCER_KIOSK_URL:-http://127.0.0.1:3000/display}"
+URL="${MIXOMANCER_KIOSK_URL:-http://127.0.0.1/display}"
+HEALTH="${MIXOMANCER_HEALTH_URL:-http://127.0.0.1/up}"
 # Bust Chromium's disk cache so CSS/artwork updates show on HDMI.
 URL="${URL%%\?*}?v=$(date +%s)"
-PROFILE="${MIXOMANCER_KIOSK_PROFILE:-/home/rob/.config/mixomancer-kiosk}"
+PROFILE="${MIXOMANCER_KIOSK_PROFILE:-/home/haruna/.config/mixomancer-kiosk}"
 mkdir -p "$PROFILE"
 
 for _ in $(seq 1 60); do
-  if curl -sf -o /dev/null --max-time 1 http://127.0.0.1:3000/up; then
+  if curl -sf -o /dev/null --max-time 1 "$HEALTH"; then
     break
   fi
   sleep 1

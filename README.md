@@ -12,38 +12,31 @@ Work landed on **haruna** (`192.168.72.3`) and **gluttony** (`192.168.72.2`):
 
 | Piece | Where | Notes |
 |-------|--------|--------|
-| Library | gluttony `/mnt/tnas/md1/appdata/audio_cds` | 4 CD rips: guitar + forest + rain + songbirds (WAV) |
+| Library | gluttony `/mnt/4tb/a/md1/appdata/audio_cds` | 4 CD rips: guitar + forest + rain + songbirds (WAV). `/mnt/tnas/md1/appdata` is an empty stub. |
 | NFS | haruna `/mnt/audio_cds` | `192.168.72.2:/appdata/audio_cds` (NFSv4.2, systemd automount) |
-| Player | haruna `audio-cds-queue.service` (user `rob`) | mpv + m3u, currently **analog HP jack** |
-| Playlist | `/home/rob/audio-cds-queue/playlist.m3u` | guitar tracks, then forest, rain, songbirds; loops |
+| Player | haruna `audio-cds-queue.service` (user `haruna`) | mpv + m3u, **analog HP jack** |
+| Playlist | `/var/lib/mixomancer/playlist.m3u` | guitar tracks, then forest, rain, songbirds; loops |
 | Bluetooth | haruna `bluez` + P27 (`F4:4E:FD:4D:7D:B9`) | paired; A2DP worked; jack is the current output |
-| Audio stack | PipeWire + WirePlumber (user `rob`, linger) | headless seat-monitoring disabled so ALSA/A2DP register |
+| Audio stack | PipeWire + WirePlumber (user `haruna`, linger) | headless seat-monitoring disabled so ALSA/A2DP register |
 
 This Rails app is the next layer: a server UI and API in front of that queue, instead of only a systemd unit.
 
-## Dev server (haruna)
+## Production (haruna)
 
-Toolchain is **mise** on the host (not Docker):
+The live process is the machine account **haruna** (uid 2003), not `rob`. Code runs from `/opt/mixomancer`. `RAILS_ENV=production`.
 
-- Ruby **4.0.6** (from `.ruby-version` / Gemfile)
-- Node.js **24.18.0**
-- **aube** ([aube.jdx.dev](https://aube.jdx.dev), `/ob/`) — jdx’s Node package manager (the JS counterpart to mise). Not Yarn/npm/pnpm.
+Thruster listens on port 80 and proxies to Puma on `127.0.0.1:3000`. Nothing else on this host wants port 80, so there is no separate nginx or Caddy. LAN URLs: **http://haruna.lan** and **http://mixomancer.lan**.
 
 ```bash
-ssh haruna
-cd ~/Ruby-on-Rails-Wizardry/mixomancer
-bin/dev          # puma + tailwind watch on :3000
+sudo systemctl restart mixomancer audio-cds-queue mixomancer-kiosk
 ```
 
-LAN: **http://haruna.lan:3000** or **http://mixomancer.lan:3000** or **http://192.168.72.3:3000**.
+PipeWire for this box belongs to `haruna` (`loginctl enable-linger haruna`). `rob`'s user PipeWire and the old development `mixomancer.service` stay disabled so they do not take the sound card or port 3000.
 
-User unit `mixomancer.service` starts `bin/dev` bound to `0.0.0.0:3000`.
-
-```bash
-systemctl --user -M rob@ start|stop|status mixomancer
-```
+`bin/dev` is still the local development server. It is not what haruna runs.
 
 ## Docs
 
+- [docs/production.md](docs/production.md) — live layout, deploy, and traps
 - [docs/history.md](docs/history.md) — how we got here (NFS, mpv, Bluetooth, analog)
 - [AGENTS.md](AGENTS.md) — agent playbook

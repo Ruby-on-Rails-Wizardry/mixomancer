@@ -1,0 +1,41 @@
+#!/bin/bash
+# Play the audio queue on haruna's analog jack. Runs as the haruna user.
+set -euo pipefail
+
+NFS_DIR="${NFS_DIR:-/mnt/audio_cds}"
+STATE="${MIXOMANCER_STATE_DIR:-/var/lib/mixomancer}"
+SESSION="${SESSION:-$STATE/session.m3u}"
+if [[ -z "${PLAYLIST:-}" ]]; then
+  if [[ -f "$SESSION" ]]; then
+    PLAYLIST="$SESSION"
+  else
+    PLAYLIST="$STATE/playlist.m3u"
+  fi
+fi
+RUNTIME="${XDG_RUNTIME_DIR:?XDG_RUNTIME_DIR is required}"
+export XDG_RUNTIME_DIR="$RUNTIME"
+export PULSE_SERVER="${PULSE_SERVER:-unix:${RUNTIME}/pulse/native}"
+
+ls "$NFS_DIR" >/dev/null
+
+amixer -c 0 sset Master unmute 80% >/dev/null || true
+
+sink=""
+for _ in $(seq 1 30); do
+  sink="$(pactl list short sinks 2>/dev/null | awk '/alsa_output.*analog/ {print $2; exit}' || true)"
+  [[ -n $sink ]] && break
+  sleep 1
+done
+[[ -n $sink ]] || { echo "no analog ALSA sink" >&2; exit 1; }
+
+pactl set-default-sink "$sink"
+pactl set-sink-volume "$sink" 80%
+pactl set-sink-mute "$sink" 0
+
+SOCKET="${RUNTIME}/mpv-audio-cds.sock"
+rm -f "$SOCKET"
+
+exec mpv --no-video --gapless-audio=yes --loop-playlist=inf \
+  --ao=pulse --audio-device="pulse/${sink}" \
+  --input-ipc-server="$SOCKET" \
+  --playlist="$PLAYLIST"

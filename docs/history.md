@@ -1,6 +1,10 @@
 # History — Mixomancer groundwork
 
-How the shop music path existed **before** this Rails app. Meadow Circle is one LAN (house front, shop back). See RobShare `notes/site.md`.
+How the shop music path existed **before** this Rails app, plus later host moves. Meadow Circle is one LAN (house front, shop back). See RobShare `notes/site.md`. Current production layout: [production.md](production.md).
+
+## 2026-09-24
+
+Production cutover on haruna. The service user is the machine account `haruna` (uid 2003), not `rob`. Thruster on port 80, Puma on `127.0.0.1:3000`, mpv and the HDMI kiosk also run as `haruna`. PipeWire for this box belongs to `haruna`; `rob`'s PipeWire units are masked. Details and the traps (`%U` means root, `NoNewPrivileges` breaks sudo, stale NFS handle) are in [production.md](production.md).
 
 ## 2026-08-22 / 23
 

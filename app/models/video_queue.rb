@@ -3,8 +3,10 @@ class VideoQueue
   UNIT = "mixomancer-video.service"
   MOVIES = Pathname.new("/mnt/movies")
   SHOWS = Pathname.new("/mnt/shows")
-  CURRENT_PATH = Pathname.new("/home/rob/audio-cds-queue/video-current")
-  SOCKET = File.join(ENV.fetch("XDG_RUNTIME_DIR", "/run/user/1000"), "mpv-video.sock")
+  CURRENT_PATH = Pathname.new(ENV.fetch("MIXOMANCER_VIDEO_CURRENT", "/var/lib/mixomancer/video-current"))
+  SOCKET = ENV.fetch("MIXOMANCER_VIDEO_SOCKET") {
+    File.join(ENV.fetch("XDG_RUNTIME_DIR", "/run/user/2003"), "mpv-video.sock")
+  }
   VIDEO_EXTS = %w[.mp4 .mkv .m4v .avi .mov .webm .mpg .mpeg].freeze
 
   class << self

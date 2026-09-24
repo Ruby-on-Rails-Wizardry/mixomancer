@@ -2,7 +2,7 @@
 class HdmiDisplay
   KIOSK_UNIT = "mixomancer-kiosk.service"
   VIDEO_UNIT = "mixomancer-video.service"
-  CONTROL_URL = ENV.fetch("MIXOMANCER_URL", "http://haruna.local:3000")
+  CONTROL_URL = ENV.fetch("MIXOMANCER_URL", "http://haruna.lan")
 
   def self.ensure_kiosk
     systemctl("start", KIOSK_UNIT)

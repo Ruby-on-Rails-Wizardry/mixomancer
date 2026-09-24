@@ -1,19 +1,31 @@
 [Unit]
-Description=Mixomancer Rails development server
-After=network-online.target pipewire-pulse.service
-Wants=network-online.target
+Description=Mixomancer production server
+After=network-online.target user@2003.service
+Wants=network-online.target user@2003.service
 
 [Service]
 Type=simple
-WorkingDirectory=/home/rob/Ruby-on-Rails-Wizardry/mixomancer
-Environment=PATH=/home/rob/.local/share/mise/shims:/home/rob/.local/share/mise/installs/ruby/4.0.6/bin:/usr/bin:/usr/local/bin
-Environment=RAILS_ENV=development
+User=haruna
+Group=haruna
+SupplementaryGroups=audio
+WorkingDirectory=/opt/mixomancer
+Environment=RAILS_ENV=production
+Environment=RAILS_LOG_LEVEL=info
+Environment=BIND=127.0.0.1
 Environment=PORT=3000
-Environment=BINDING=0.0.0.0
-Environment=XDG_RUNTIME_DIR=/run/user/1000
-ExecStart=/home/rob/Ruby-on-Rails-Wizardry/mixomancer/bin/rails server -b 0.0.0.0 -p 3000
+Environment=HTTP_PORT=80
+Environment=TARGET_PORT=3000
+Environment=SOLID_QUEUE_IN_PUMA=true
+Environment=MIXOMANCER_URL=http://haruna.lan
+Environment=MIXOMANCER_STATE_DIR=/var/lib/mixomancer
+Environment=XDG_RUNTIME_DIR=/run/user/2003
+Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/2003/bus
+Environment=PATH=/home/haruna/.local/share/mise/shims:/home/haruna/.local/share/mise/installs/ruby/4.0.6/bin:/usr/bin:/bin
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+ExecStartPre=/opt/mixomancer/bin/rails db:prepare
+ExecStart=/opt/mixomancer/bin/thrust /opt/mixomancer/bin/rails server -b 127.0.0.1 -p 3000
 Restart=on-failure
 RestartSec=5
 
 [Install]
-WantedBy=default.target
+WantedBy=multi-user.target
