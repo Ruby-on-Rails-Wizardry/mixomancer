@@ -2,10 +2,22 @@
 # Full-screen Mixomancer on the HDMI output. No login session required.
 set -euo pipefail
 
-URL="${MIXOMANCER_KIOSK_URL:-http://127.0.0.1/display}"
+DEFAULT_URL="${MIXOMANCER_KIOSK_URL:-http://127.0.0.1/display}"
+STATE_DIR="${MIXOMANCER_STATE_DIR:-/var/lib/mixomancer}"
+STATE_FILE="$STATE_DIR/kiosk-url"
 HEALTH="${MIXOMANCER_HEALTH_URL:-http://127.0.0.1/up}"
-# Bust Chromium's disk cache so CSS/artwork updates show on HDMI.
-URL="${URL%%\?*}?v=$(date +%s)"
+URL="$DEFAULT_URL"
+if [[ -f "$STATE_FILE" ]]; then
+  IFS= read -r URL < "$STATE_FILE" || URL="$DEFAULT_URL"
+fi
+# Only an http(s) address overrides the display. Anything else falls back.
+if [[ ! "$URL" =~ ^https?://[^[:space:]]+$ ]]; then
+  URL="$DEFAULT_URL"
+fi
+# Bust Chromium's disk cache for the now-playing page. Leave other URLs alone.
+if [[ "${URL%%\?*}" == "${DEFAULT_URL%%\?*}" ]]; then
+  URL="${DEFAULT_URL%%\?*}?v=$(date +%s)"
+fi
 PROFILE="${MIXOMANCER_KIOSK_PROFILE:-/home/haruna/.config/mixomancer-kiosk}"
 mkdir -p "$PROFILE"
 

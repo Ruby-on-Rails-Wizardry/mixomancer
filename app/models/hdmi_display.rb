@@ -8,6 +8,10 @@ class HdmiDisplay
     systemctl("start", KIOSK_UNIT)
   end
 
+  def self.restart_kiosk
+    systemctl("restart", KIOSK_UNIT)
+  end
+
   def self.start_video
     systemctl("start", VIDEO_UNIT)
   end

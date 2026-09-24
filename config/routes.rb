@@ -10,6 +10,9 @@ Rails.application.routes.draw do
   get "about", to: "home#about", as: :about
   get "display", to: "home#display", as: :display
   get "library", to: "home#library", as: :library
+  get "browser", to: "browser#show", as: :browser
+  post "browser", to: "browser#go"
+  post "browser/reset", to: "browser#reset", as: :reset_browser
 
   post "play", to: "player#play", as: :play
   post "stop", to: "player#stop", as: :stop

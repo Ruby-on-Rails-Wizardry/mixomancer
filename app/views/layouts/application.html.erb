@@ -33,6 +33,7 @@
         <div class="flex items-center gap-6">
           <%= nav_link "Player", root_path %>
           <%= nav_link "Library", library_path %>
+          <%= nav_link "Browser", browser_path %>
           <%= nav_link "Remotes", remotes_path %>
           <%= nav_link "About", about_path %>
         </div>
@@ -40,6 +41,9 @@
     </header>
 
     <main class="container mx-auto px-3 py-6">
+      <% if notice.present? %>
+        <p class="mb-6 max-w-3xl rounded-lg bg-emerald-900/60 px-4 py-2 text-sm text-emerald-200"><%= notice %></p>
+      <% end %>
       <% if alert.present? %>
         <p class="mb-6 max-w-3xl rounded-lg bg-red-900/60 px-4 py-2 text-sm text-red-200"><%= alert %></p>
       <% end %>

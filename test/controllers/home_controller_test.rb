@@ -35,6 +35,7 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_select "nav a", text: "Mixomancer"
     assert_select "nav a", text: "Player"
     assert_select "nav a", text: "Library"
+    assert_select "nav a", text: "Browser"
     assert_select "nav a", text: "Remotes"
     assert_select "nav a", text: "About"
     assert_select "h1", "Now playing"

@@ -1,0 +1,33 @@
+<% content_for :title, "Browser · Mixomancer" %>
+
+<div class="mx-auto w-full max-w-3xl space-y-6">
+  <header>
+    <h1 class="text-3xl font-bold tracking-tight text-zinc-50">Browser</h1>
+    <p class="mt-2 text-sm text-zinc-400">
+      Open a page on the HDMI kiosk. Its home page stays the now-playing display.
+    </p>
+  </header>
+
+  <section class="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
+    <div class="grid grid-cols-2 items-end gap-3 sm:grid-cols-[minmax(0,1fr)_auto_auto]">
+      <%= form_with url: browser_path, method: :post, class: "contents" do |form| %>
+        <div class="col-span-2 sm:col-span-1">
+          <%= form.label :url, "URL", class: "block text-sm font-medium text-zinc-300" %>
+          <%= form.url_field :url,
+                value: @kiosk.url,
+                required: true,
+                spellcheck: false,
+                autocapitalize: "off",
+                autocomplete: "url",
+                inputmode: "url",
+                class: "mt-2 w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2.5 font-mono text-sm text-zinc-100 focus:border-violet-500 focus:outline-none" %>
+        </div>
+        <%= form.button "Go", type: "submit",
+              class: "w-full rounded-lg bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-violet-500 sm:w-auto" %>
+      <% end %>
+      <%= button_to "Back to display", reset_browser_path, method: :post,
+            form_class: "w-full sm:w-auto",
+            class: "w-full rounded-lg border border-zinc-600 bg-zinc-800 px-5 py-2.5 text-sm font-semibold text-zinc-100 hover:bg-zinc-700" %>
+    </div>
+  </section>
+</div>

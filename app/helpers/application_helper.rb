@@ -4,6 +4,8 @@ module ApplicationHelper
       action_name == "library"
     elsif path == remotes_path
       controller_name == "remotes"
+    elsif path == browser_path
+      controller_name == "browser"
     elsif path == root_path
       action_name == "index"
     else
