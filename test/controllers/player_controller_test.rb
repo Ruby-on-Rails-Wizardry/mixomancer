@@ -30,7 +30,7 @@ class PlayerControllerTest < ActionDispatch::IntegrationTest
     Playback.factory = -> { fake_playback(stop: false) }
     post stop_url
     follow_redirect!
-    assert_match "Could not stop playback.", response.body
+    assert_match "Could not pause playback.", response.body
   end
 
   test "play_item plays an album and stays on that tab" do

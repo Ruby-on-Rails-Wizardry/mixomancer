@@ -52,8 +52,18 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     get root_url
     assert_select "form[action=?]", play_path
     assert_select "form[action=?]", stop_path
-    assert_select "button[data-player-target=play][disabled]"
-    assert_select "button[data-player-target=stop]:not([disabled])"
+    assert_select "button[data-player-target=play][disabled]", text: /Play/
+    assert_select "button[data-player-target=play] svg path[fill-rule=evenodd]"
+    assert_select "button[data-player-target=pause]:not([disabled])", text: /Pause/
+    assert_select "button[data-player-target=pause] svg path[fill-rule=evenodd]"
+    assert_select "button", text: "Stop", count: 0
+  end
+
+  test "paused playback enables play and disables pause" do
+    @status[:state] = "paused"
+    get root_url
+    assert_select "button[data-player-target=play]:not([disabled])"
+    assert_select "button[data-player-target=pause][disabled]"
   end
 
   test "library page is linked from the nav" do

@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["badge", "title", "album", "position", "duration", "index", "progress", "play", "stop", "meta", "track", "bar", "backdrop"]
+  static targets = ["badge", "title", "album", "position", "duration", "index", "progress", "play", "pause", "meta", "track", "bar", "backdrop"]
   static values = { url: String, seekUrl: String, replayUrl: String, forwardUrl: String, interval: { type: Number, default: 2000 } }
 
   connect() {
@@ -96,8 +96,8 @@ export default class extends Controller {
     if (this.hasPlayTarget) {
       this.playTarget.disabled = playing
     }
-    if (this.hasStopTarget) {
-      this.stopTarget.disabled = !playing
+    if (this.hasPauseTarget) {
+      this.pauseTarget.disabled = !playing
     }
     if (this.hasBackdropTarget) {
       const url = data.artwork_url

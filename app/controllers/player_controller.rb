@@ -11,7 +11,7 @@ class PlayerController < ApplicationController
     if Playback.build.stop
       redirect_back_or_to root_path, status: :see_other
     else
-      redirect_back_or_to root_path, alert: "Could not stop playback.", status: :see_other
+      redirect_back_or_to root_path, alert: "Could not pause playback.", status: :see_other
     end
   end
 

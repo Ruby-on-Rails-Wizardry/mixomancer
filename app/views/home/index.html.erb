@@ -19,16 +19,22 @@
         </p>
       </div>
       <div class="flex gap-3">
-        <%= button_to "Play", play_path, method: :post,
+        <%= button_to play_path, method: :post,
               form_class: "inline",
               class: transport_play_class,
               disabled: @now_playing[:state] == "playing",
-              data: { player_target: "play" } %>
-        <%= button_to "Stop", stop_path, method: :post,
+              data: { player_target: "play" } do %>
+          <%= media_icon(:play) %>
+          Play
+        <% end %>
+        <%= button_to stop_path, method: :post,
               form_class: "inline",
-              class: transport_stop_class,
+              class: transport_pause_class,
               disabled: @now_playing[:state] != "playing",
-              data: { player_target: "stop" } %>
+              data: { player_target: "pause" } do %>
+          <%= media_icon(:pause) %>
+          Pause
+        <% end %>
       </div>
     </div>
 
