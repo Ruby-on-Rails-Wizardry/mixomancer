@@ -1,11 +1,7 @@
 <% content_for :title, "#{@remote.name} · Mixomancer" %>
 
 <div class="mx-auto w-full max-w-md space-y-4">
-  <div class="flex items-end justify-between gap-3">
-    <div>
-      <p class="text-xs font-medium uppercase tracking-wide text-violet-400"><%= link_to "Remotes", remotes_path, class: "hover:text-violet-300" %></p>
-      <h1 class="text-2xl font-bold tracking-tight text-zinc-50"><%= @remote.name %></h1>
-    </div>
+  <div class="flex justify-end">
     <% if @blaster_online %>
       <span class="rounded-full bg-emerald-900/80 px-3 py-1 text-xs text-emerald-300">online</span>
     <% else %>

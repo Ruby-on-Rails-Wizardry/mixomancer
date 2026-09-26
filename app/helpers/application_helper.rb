@@ -2,12 +2,10 @@ module ApplicationHelper
   def nav_link(label, path)
     active = if path == library_path
       action_name == "library"
-    elsif path == remotes_path
-      controller_name == "remotes"
     elsif path == browser_path
       controller_name == "browser"
     elsif path == root_path
-      action_name == "index"
+      controller_name == "home" && action_name == "index"
     else
       current_page?(path)
     end

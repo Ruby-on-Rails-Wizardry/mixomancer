@@ -17,16 +17,17 @@ class RemotesControllerTest < ActionDispatch::IntegrationTest
   test "index lists remotes" do
     get remotes_url
     assert_response :success
-    assert_select "h1", "Remotes"
     assert_select "a", /Sceptre TV/
     assert_select "a", /Soundbar/
-    assert_select "nav a", text: "Remotes"
+    assert_select "nav a", text: "Sceptre"
+    assert_select "nav a", text: "Soundbar"
   end
 
   test "show renders the sceptre face" do
     get remote_url("sceptre")
     assert_response :success
-    assert_select "h1", "Sceptre TV"
+    assert_select "title", text: "Sceptre TV · Mixomancer"
+    assert_select "nav a[aria-current=page]", text: "Sceptre"
     assert_select "button[data-command=power]", text: "Power"
     assert_select "button[data-command=hdmi]", text: "HDMI"
     assert_select "button[data-command=vol_up][data-hold=true]"
@@ -35,7 +36,8 @@ class RemotesControllerTest < ActionDispatch::IntegrationTest
   test "show renders the soundbar face" do
     get remote_url("soundbar")
     assert_response :success
-    assert_select "h1", "Soundbar"
+    assert_select "title", text: "Soundbar · Mixomancer"
+    assert_select "nav a[aria-current=page]", text: "Soundbar"
     assert_select "button[data-command=music]", text: "MUSIC"
     assert_select "button[data-command=play]", text: "RESET"
   end
