@@ -31,7 +31,7 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
   test "root renders mixomancer nav and now playing without the library" do
     get root_url
     assert_response :success
-    assert_select "nav", text: /Ruby on Rails Wizardry/
+    assert_no_match "Ruby on Rails Wizardry", @response.body
     assert_select "nav a", text: "Mixomancer"
     assert_select "nav a", text: "Player"
     assert_select "nav a", text: "Library"
@@ -98,6 +98,7 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     get display_url
     assert_response :success
     assert_select "nav", count: 0
+    assert_no_match "Ruby on Rails Wizardry", @response.body
     assert_select "[data-player-target=title]", "Bittersweet"
     assert_match "Scan to control", @response.body
     assert_match "http://haruna.lan", @response.body
