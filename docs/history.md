@@ -2,6 +2,10 @@
 
 How the shop music path existed **before** this Rails app, plus later host moves. Meadow Circle is one LAN (house front, shop back). See RobShare `notes/site.md`. Current production layout: [production.md](production.md).
 
+## 2026-09-26
+
+IR remotes no longer call `http://ir-mc.lan`. The Haruna ESP32 (`ir-mc-582abd78af4c` on `/dev/ttyUSB0`) cannot join `Ferney` because that SSID is 5 GHz only. Mixomancer sends the same protocol JSON to `/run/ir-mc/blast.sock`. The serial bridge owns the port and the board answers `IRACK`.
+
 ## 2026-09-24
 
 Production cutover on haruna. The service user is the machine account `haruna` (uid 2003), not `rob`. Thruster on port 80, Puma on `127.0.0.1:3000`, mpv and the HDMI kiosk also run as `haruna`. PipeWire for this box belongs to `haruna`; `rob`'s PipeWire units are masked. Details and the traps (`%U` means root, `NoNewPrivileges` breaks sudo, stale NFS handle) are in [production.md](production.md).

@@ -1,10 +1,13 @@
 require "json"
 require "net/http"
+require "socket"
+require "timeout"
 require "uri"
 
-# Forwards learned IR codes to the Haruna ESP32 ir_bridge over HTTP.
+# Sends learned IR codes to the Haruna ESP32 over the USB bridge socket.
+# An explicit http: or base_url: still uses the old Wi-Fi HTTP API.
 class IrBlaster
-  DEFAULT_URL = "http://ir-mc.lan".freeze
+  DEFAULT_SOCKET = "/run/ir-mc/blast.sock".freeze
 
   class << self
     attr_accessor :factory
@@ -14,8 +17,9 @@ class IrBlaster
     end
   end
 
-  def initialize(base_url: ENV.fetch("IR_MC_URL", DEFAULT_URL), http: nil)
-    @base_url = base_url.to_s.chomp("/")
+  def initialize(socket_path: ENV.fetch("IR_MC_SOCKET", DEFAULT_SOCKET), base_url: nil, http: nil)
+    @socket_path = socket_path
+    @base_url = base_url.to_s.chomp("/").presence
     @http = http
   end
 
@@ -24,22 +28,55 @@ class IrBlaster
     payload = remote&.payload_for(command)
     return false unless payload
 
-    post("/ir/send", payload)
+    if http_transport?
+      post("/ir/send", payload)
+    else
+      body = socket_exchange(payload)
+      body.is_a?(Hash) && body["ok"] == true
+    end
   end
 
   def online?
-    body = get("/status")
-    return false unless body
+    if http_transport?
+      body = get("/status")
+      return false unless body
 
-    JSON.parse(body)["tx"] == true
+      JSON.parse(body)["tx"] == true
+    else
+      body = socket_exchange({ "op" => "status" })
+      body.is_a?(Hash) && body["ok"] == true && body["tx"] == true
+    end
   rescue JSON::ParserError, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Net::OpenTimeout, Net::ReadTimeout, SocketError
     false
   end
 
   private
 
+  def http_transport?
+    !@http.nil? || @base_url
+  end
+
+  def http_base
+    @base_url || "http://ir-mc.lan"
+  end
+
+  def socket_exchange(payload)
+    Timeout.timeout(8) do
+      UNIXSocket.open(@socket_path) do |sock|
+        sock.puts(JSON.generate(payload))
+        line = sock.gets
+        return nil if line.nil? || line.strip.empty?
+
+        JSON.parse(line)
+      end
+    end
+  rescue Errno::ENOENT, Errno::ECONNREFUSED, Errno::EPIPE, Errno::ECONNRESET,
+         SocketError, Timeout::Error, JSON::ParserError
+    nil
+  end
+
   def post(path, payload)
-    uri = URI.parse("#{@base_url}#{path}")
+    uri = URI.parse("#{http_base}#{path}")
     response = http_for(uri).post(uri.request_uri, JSON.generate(payload),
                                  "Content-Type" => "application/json",
                                  "Accept" => "application/json")
@@ -49,7 +86,7 @@ class IrBlaster
   end
 
   def get(path)
-    uri = URI.parse("#{@base_url}#{path}")
+    uri = URI.parse("#{http_base}#{path}")
     response = http_for(uri).get(uri.request_uri)
     response.is_a?(Net::HTTPSuccess) ? response.body : nil
   end

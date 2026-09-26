@@ -27,7 +27,7 @@ class RemotesController < ApplicationController
     if ok
       redirect_to remote_path(params[:id]), status: :see_other
     else
-      redirect_to remote_path(params[:id]), alert: "IR blast failed. Is the Haruna ESP32 up?", status: :see_other
+      redirect_to remote_path(params[:id]), alert: "IR blast failed. The USB blaster did not acknowledge.", status: :see_other
     end
   end
 end

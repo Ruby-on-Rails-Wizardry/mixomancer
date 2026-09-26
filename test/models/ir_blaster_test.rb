@@ -1,4 +1,5 @@
 require "test_helper"
+require "socket"
 
 class IrBlasterTest < ActiveSupport::TestCase
   class FakeHttp
@@ -60,5 +61,50 @@ class IrBlasterTest < ActiveSupport::TestCase
 
   test "online? reads tx from /status" do
     assert IrBlaster.new(http: FakeHttp.new).online?
+  end
+
+  test "press sends protocol JSON over the usb socket" do
+    dir = Dir.mktmpdir
+    path = File.join(dir, "blast.sock")
+    received = nil
+    server = UNIXServer.new(path)
+    thread = Thread.new do
+      client = server.accept
+      received = JSON.parse(client.gets)
+      client.puts('{"ok":true,"tx":true}')
+      client.close
+    end
+
+    assert IrBlaster.new(socket_path: path).press("sceptre", "power")
+    thread.join(2)
+    assert_equal "sony", received["protocol"]
+    assert_equal 1, received["address"]
+    assert_equal 21, received["command"]
+    assert_equal 40000, received["freq"]
+  ensure
+    server&.close
+    FileUtils.remove_entry(dir) if dir
+  end
+
+  test "online? is true when the usb bridge reports tx" do
+    dir = Dir.mktmpdir
+    path = File.join(dir, "blast.sock")
+    server = UNIXServer.new(path)
+    thread = Thread.new do
+      client = server.accept
+      JSON.parse(client.gets)
+      client.puts('{"ok":true,"tx":true}')
+      client.close
+    end
+
+    assert IrBlaster.new(socket_path: path).online?
+    thread.join(2)
+  ensure
+    server&.close
+    FileUtils.remove_entry(dir) if dir
+  end
+
+  test "online? is false when the usb socket is missing" do
+    assert_not IrBlaster.new(socket_path: "/tmp/ir-mc-missing-#{Process.pid}.sock").online?
   end
 end

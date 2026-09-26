@@ -1,5 +1,5 @@
 # Learned 2026-08-29 from the handhelds onto ir-mc-489d31e61010.
-# Mixomancer blasts protocol JSON through Haruna's ir_bridge (GPIO 18).
+# Mixomancer blasts protocol JSON to Haruna's ir_bridge over USB (GPIO 18).
 sceptre:
   name: Sceptre TV
   blaster: haruna
