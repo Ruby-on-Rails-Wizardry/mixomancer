@@ -72,7 +72,6 @@ soundbar:
   bits: 32
   freq: 38000
   repeat: 1
-  note: Haruna's IR LED is aimed at the TV. The bar may need its own emitter, or a bounce off the wall.
   buttons:
     power: { command: 77, label: Power, style: power }
     mute: { command: 67, label: Mute, style: accent }

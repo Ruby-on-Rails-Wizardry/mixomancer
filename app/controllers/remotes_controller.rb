@@ -1,14 +1,11 @@
 class RemotesController < ApplicationController
   def index
     @remotes = IrRemote.all
-    @blaster_online = IrBlaster.build.online?
   end
 
   def show
     @remote = IrRemote.find(params[:id])
     return redirect_to remotes_path, alert: "Unknown remote." unless @remote
-
-    @blaster_online = IrBlaster.build.online?
   end
 
   def press

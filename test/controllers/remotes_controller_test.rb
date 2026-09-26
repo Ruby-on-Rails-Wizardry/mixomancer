@@ -6,7 +6,6 @@ class RemotesControllerTest < ActionDispatch::IntegrationTest
     blaster = Object.new
     sent = @sent
     blaster.define_singleton_method(:press) { |remote, command| sent << [ remote, command ]; true }
-    blaster.define_singleton_method(:online?) { true }
     IrBlaster.factory = -> { blaster }
   end
 
